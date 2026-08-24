@@ -1,0 +1,72 @@
+2026-08-24 12:12:12,526 - MainThread - sqlmesh.core.config.connection - INFO - Creating new DuckDB adapter for data files: {'db/analytics.duckdb'} (connection.py:513)
+2026-08-24 12:12:13,160 - MainThread - sqlmesh.core.config.connection - INFO - Using existing DuckDB adapter due to overlapping data file: db/analytics.duckdb (connection.py:503)
+2026-08-24 12:12:18,313 - MainThread - sqlmesh.core.plan.evaluator - INFO - Evaluating plan stage CreateSnapshotRecordsStage (evaluator.py:123)
+2026-08-24 12:12:18,332 - MainThread - sqlmesh.core.plan.evaluator - INFO - Evaluating plan stage PhysicalLayerSchemaCreationStage (evaluator.py:123)
+2026-08-24 12:12:18,333 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Creating schema 'analytics.sqlmesh__sales_analytics' (evaluator.py:1468)
+2026-08-24 12:12:18,333 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ CREATE SCHEMA IF NOT EXISTS "analytics"."sqlmesh__sales_analytics" (base.py:2654)
+2026-08-24 12:12:18,333 - MainThread - sqlmesh.core.plan.evaluator - INFO - Evaluating plan stage BackfillStage (evaluator.py:123)
+2026-08-24 12:12:18,335 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Listing data objects in schema analytics.sqlmesh__sales_analytics (evaluator.py:1635)
+2026-08-24 12:12:18,335 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ SELECT CURRENT_CATALOG (base.py:2654)
+2026-08-24 12:12:18,336 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ SELECT CURRENT_CATALOG (base.py:2654)
+2026-08-24 12:12:18,337 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ SELECT table_name AS name, table_schema AS schema, CASE table_type WHEN 'BASE TABLE' THEN 'table' WHEN 'VIEW' THEN 'view' WHEN 'LOCAL TEMPORARY' THEN 'table' END AS type FROM system.information_schema.tables WHERE (table_catalog = 'analytics' AND table_schema = 'sqlmesh__sales_analytics') AND table_name IN ('sales_analytics__stg_transactions__3769116021') (base.py:2654)
+2026-08-24 12:12:18,340 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Creating a physical table for snapshot SnapshotId<"analytics"."sales_analytics"."stg_transactions": 2755928025> (evaluator.py:889)
+2026-08-24 12:12:18,345 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Creating table 'analytics.sqlmesh__sales_analytics.sales_analytics__stg_transactions__3769116021' (evaluator.py:2095)
+2026-08-24 12:12:18,345 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ SELECT CURRENT_CATALOG (base.py:2654)
+2026-08-24 12:12:18,346 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ SELECT type FROM DUCKDB_DATABASES() WHERE database_name = 'analytics' (base.py:2654)
+2026-08-24 12:12:18,347 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ CREATE TABLE IF NOT EXISTS "analytics"."sqlmesh__sales_analytics"."sales_analytics__stg_transactions__3769116021" ("transaction_id" INT, "customer_id" TEXT, "transaction_date" DATE, "amount" DECIMAL(10, 2), "currency" TEXT) (base.py:2654)
+2026-08-24 12:12:18,349 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Dry running model 'sales_analytics.stg_transactions' (evaluator.py:2117)
+2026-08-24 12:12:18,350 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ SELECT CAST("transaction_id" AS INT) AS "transaction_id", CAST("customer_id" AS TEXT) AS "customer_id", CAST("transaction_date" AS DATE) AS "transaction_date", CAST("amount" AS DECIMAL(10, 2)) AS "amount", CAST("currency" AS TEXT) AS "currency" FROM READ_CSV_AUTO('sources/transactions/transactions_*.csv') AS "_0" WHERE CAST("transaction_date" AS DATE) BETWEEN CAST('1970-01-01' AS DATE) AND CAST('1970-01-01' AS DATE) AND FALSE LIMIT 0 (base.py:2654)
+2026-08-24 12:12:18,367 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Evaluating snapshot SnapshotId<"analytics"."sales_analytics"."stg_transactions": 2755928025> (evaluator.py:730)
+2026-08-24 12:12:18,367 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Inserting data for snapshot SnapshotId<"analytics"."sales_analytics"."stg_transactions": 2755928025> (evaluator.py:971)
+2026-08-24 12:12:18,371 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Inserting batch (2026-08-17 00:00:00, 2026-08-24 00:00:00) into analytics.sqlmesh__sales_analytics.sales_analytics__stg_transactions__3769116021' (evaluator.py:1003)
+2026-08-24 12:12:18,372 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ DELETE FROM "analytics"."sqlmesh__sales_analytics"."sales_analytics__stg_transactions__3769116021" WHERE "transaction_date" BETWEEN CAST('2026-08-17' AS DATE) AND CAST('2026-08-23' AS DATE) (base.py:2654)
+2026-08-24 12:12:18,374 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ INSERT INTO "analytics"."sqlmesh__sales_analytics"."sales_analytics__stg_transactions__3769116021" ("transaction_id", "customer_id", "transaction_date", "amount", "currency") SELECT "transaction_id", "customer_id", "transaction_date", "amount", "currency" FROM (SELECT CAST("transaction_id" AS INT) AS "transaction_id", CAST("customer_id" AS TEXT) AS "customer_id", CAST("transaction_date" AS DATE) AS "transaction_date", CAST("amount" AS DECIMAL(10, 2)) AS "amount", CAST("currency" AS TEXT) AS "currency" FROM READ_CSV_AUTO('sources/transactions/transactions_*.csv') AS "_0" WHERE CAST("transaction_date" AS DATE) BETWEEN CAST('2026-08-17' AS DATE) AND CAST('2026-08-23' AS DATE)) AS "_subquery" WHERE "transaction_date" BETWEEN CAST('2026-08-17' AS DATE) AND CAST('2026-08-23' AS DATE) (base.py:2654)
+2026-08-24 12:12:18,401 - MainThread - sqlmesh.core.snapshot.evaluator - INFO - Auditing snapshot SnapshotId<"analytics"."sales_analytics"."stg_transactions": 2755928025> (evaluator.py:622)
+2026-08-24 12:12:18,402 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ DESCRIBE "analytics"."sqlmesh__sales_analytics"."sales_analytics__stg_transactions__3769116021" (base.py:2654)
+2026-08-24 12:12:18,405 - MainThread - sqlmesh.core.engine_adapter.base - INFO - Executing SQL: /* SQLMESH_PLAN: 68565f9440fa4c0b94126f8d9abd41a1 */ SELECT COUNT(*) FROM (SELECT "transaction_id" AS "transaction_id", "customer_id" AS "customer_id", "amount" AS "amount" FROM (SELECT * FROM "analytics"."sqlmesh__sales_analytics"."sales_analytics__stg_transactions__3769116021" AS "sales_analytics__stg_transactions__3769116021" WHERE "transaction_date" BETWEEN CAST('2026-08-17' AS DATE) AND CAST('2026-08-23' AS DATE)) AS "_0" WHERE "amount" <= 0 OR "transaction_id" IS NULL OR "customer_id" IS NULL) AS "audit" (base.py:2654)
+2026-08-24 12:12:18,411 - MainThread - sqlmesh.core.scheduler - INFO - Execution failed for node EvaluateNode(snapshot_name='"analytics"."sales_analytics"."stg_transactions"', interval=(1786924800000, 1787529600000), batch_index=0) (scheduler.py:618)
+Traceback (most recent call last):
+  File "c:\Martin\Projects\SQLMeshCICD\.venv\Lib\site-packages\sqlmesh\utils\concurrency.py", line 234, in sequential_apply_to_dag
+    fn(node)
+    ~~^^^^^^
+  File "c:\Martin\Projects\SQLMeshCICD\.venv\Lib\site-packages\sqlmesh\core\scheduler.py", line 554, in run_node
+    audit_results = self.evaluate(
+        snapshot=snapshot,
+    ...<9 lines>...
+        selected_models=selected_models,
+    )
+  File "c:\Martin\Projects\SQLMeshCICD\.venv\Lib\site-packages\sqlmesh\core\scheduler.py", line 242, in evaluate
+    audit_results = self._audit_snapshot(
+        snapshot=snapshot,
+    ...<7 lines>...
+        **kwargs,
+    )
+  File "c:\Martin\Projects\SQLMeshCICD\.venv\Lib\site-packages\sqlmesh\core\scheduler.py", line 934, in _audit_snapshot
+    raise NodeAuditsErrors(audit_errors_to_raise)
+sqlmesh.utils.errors.NodeAuditsErrors: Audits failed: assert_valid_transactions
+
+The above exception was the direct cause of the following exception:
+
+sqlmesh.utils.concurrency.NodeExecutionFailedError: Execution failed for node EvaluateNode(snapshot_name='"analytics"."sales_analytics"."stg_transactions"', interval=(1786924800000, 1787529600000), batch_index=0)
+2026-08-24 12:12:18,452 - MainThread - sqlmesh.core.context - INFO - Plan application failed. (context.py:1860)
+Traceback (most recent call last):
+  File "c:\Martin\Projects\SQLMeshCICD\.venv\Lib\site-packages\sqlmesh\core\context.py", line 1852, in apply
+    self._apply(plan, circuit_breaker)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Martin\Projects\SQLMeshCICD\.venv\Lib\site-packages\sqlmesh\core\context.py", line 2646, in _apply
+    self._scheduler.create_plan_evaluator(self).evaluate(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        plan.to_evaluatable(), circuit_breaker=circuit_breaker
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Martin\Projects\SQLMeshCICD\.venv\Lib\site-packages\sqlmesh\core\plan\evaluator.py", line 105, in evaluate
+    self._evaluate_stages(plan_stages, plan)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "c:\Martin\Projects\SQLMeshCICD\.venv\Lib\site-packages\sqlmesh\core\plan\evaluator.py", line 125, in _evaluate_stages
+    handler(stage, plan)
+    ~~~~~~~^^^^^^^^^^^^^
+  File "c:\Martin\Projects\SQLMeshCICD\.venv\Lib\site-packages\sqlmesh\core\plan\evaluator.py", line 264, in visit_backfill_stage
+    raise PlanError("Plan application failed.")
+sqlmesh.utils.errors.PlanError: Plan application failed.
+2026-08-24 12:12:18,476 - MainThread - root - INFO - Shutting down the event dispatcher (dispatcher.py:159)
