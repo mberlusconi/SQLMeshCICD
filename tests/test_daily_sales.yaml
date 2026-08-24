@@ -1,0 +1,23 @@
+test_daily_sales_aggregation:
+  model: sales_analytics.daily_sales
+  inputs:
+    sales_analytics.core_transactions:
+      - transaction_id: 1
+        customer_id: "C1"
+        transaction_date: "2026-08-22 00:00:00"
+        amount: 100.00
+      - transaction_id: 2
+        customer_id: "C1"
+        transaction_date: "2026-08-22 00:00:00"
+        amount: 50.00
+      - transaction_id: 3
+        customer_id: "C2"
+        transaction_date: "2026-08-22 00:00:00"
+        amount: 150.00
+  outputs:
+    query:
+      - transaction_date: "2026-08-22"
+        total_transactions: 3
+        unique_customers: 2
+        total_revenue: 300.00
+        avg_ticket_size: 100.00

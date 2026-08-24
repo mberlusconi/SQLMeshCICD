@@ -1,0 +1,19 @@
+test_stg_transactions_logic:
+  model: sales_analytics.stg_transactions
+  vars:
+    start_date: "2026-08-22"
+    end_date: "2026-08-22"
+  inputs:
+    source_data:
+      - transaction_id: "101"
+        customer_id: "CUST_1"
+        transaction_date: "2026-08-22"
+        amount: "150.50"
+        currency: "USD"
+  outputs:
+    query:
+      - transaction_id: 101
+        customer_id: "CUST_1"
+        transaction_date: "2026-08-22"
+        amount: 150.50
+        currency: "USD"
