@@ -6,6 +6,8 @@ __pycache__/
 
 # Archivos locales de SQLMesh
 .sqlmesh/
+logs/
+*.log
 
 # Base de datos local DuckDB
 /db/*.duckdb

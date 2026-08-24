@@ -1,11 +1,11 @@
 # 🚀 Checklist de Demostración: Pipelines de Datos y CI/CD con SQLMesh & GitHub Actions
 
 ## 📋 Fase 1: Preparación del Entorno Local (Data Pipeline)
-- [ ] **1.1. Verificar Estructura de Proyectos y Datos**
-  - [ ] Validar archivos en `sources/transactions/` (del 17 al 24 de agosto).
-  - [ ] Verificar que `transactions_2026-08-22.csv` tenga solo los 12 registros válidos (eliminar las 3 filas corruptas).
+- [x] **1.1. Verificar Estructura de Proyectos y Datos**
+  - [x] Validar archivos en `sources/transactions/` (del 17 al 24 de agosto).
+  - [x] Verificar que `transactions_2026-08-22.csv` tenga solo los 12 registros válidos (eliminar las 3 filas corruptas).
 - [ ] **1.2. Construcción de Modelos del Proyecto**
-  - [ ] `models/staging/stg_transactions.sql` (Capa Staging / Incremental por fecha).
+  - [x] `models/staging/stg_transactions.sql` (Capa Staging / Incremental por fecha).
   - [ ] `models/core/core_transactions.sql` (Capa Core / Transacciones enriquecidas).
   - [ ] `models/morts/daily_sales.sql` (Capa Marts / Agregaciones de ventas diarias).
   - [ ] `audits/assert_valid_transactions.sql` (Auditoría de calidad).
