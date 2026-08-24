@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 
 # Archivos locales de SQLMesh
+.cache/
 .sqlmesh/
 logs/
 *.log
