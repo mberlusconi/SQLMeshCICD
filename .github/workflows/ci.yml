@@ -28,4 +28,4 @@ jobs:
 
       - name: Validate SQLMesh Models Plan
         run: |
-          sqlmesh plan --skip-tests --auto-apply=false
+          sqlmesh plan --skip-tests 
