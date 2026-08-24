@@ -1,0 +1,16 @@
+# Entornos virtuales y caché de Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Archivos locales de SQLMesh
+.sqlmesh/
+
+# Base de datos local DuckDB
+/db/*.duckdb
+/db/*.duckdb.wal
+
+# Sistema operativo / IDE
+.DS_Store
+.vscode/
