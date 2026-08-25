@@ -36,8 +36,21 @@ jobs:
       - name: Run SQLMesh Unit Tests
         run: sqlmesh test
 
-      - name: Run SQLMesh CI/CD Bot
+      - name: Run SQLMesh CI/CD Bot (Debug Mode)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m sqlmesh.integrations.github.cicd.command --command github_event
+          python -c "
+          import logging, traceback, sys
+          logging.basicConfig(level=logging.DEBUG)
+          
+          try:
+              from sqlmesh.integrations.github.cicd.command import bot
+              print('--- INICIANDO EJECUCIÓN DEL BOT ---')
+              bot()
+              print('--- EJECUCIÓN FINALIZADA EXITOSAMENTE ---')
+          except Exception as e:
+              print(f'*** ERROR EN EL BOT: {e} ***')
+              traceback.print_exc()
+              sys.exit(1)
+          "
