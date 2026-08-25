@@ -16,10 +16,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Trae todo el historial de commits
+          fetch-depth: 0  
 
       - name: Fetch main branch
-        run: git fetch origin main:main  # Garantiza que SQLMesh encuentre la referencia 'main' localmente
+        run: git fetch origin main:main 
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -39,6 +39,5 @@ jobs:
       - name: Run SQLMesh CI/CD Bot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PYTHONUNBUFFERED: "1"
         run: |
-          python -m sqlmesh.integrations.github.cicd.command --command github_event --p ${{ github.event_path }}
+          python -m sqlmesh.integrations.github.cicd.command --command github_event
