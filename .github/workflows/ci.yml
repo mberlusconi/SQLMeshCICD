@@ -40,17 +40,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -c "
-          import logging, traceback, sys
-          logging.basicConfig(level=logging.DEBUG)
-          
-          try:
-              from sqlmesh.integrations.github.cicd.command import github_event
-              print('--- INICIANDO EJECUCIÓN DEL BOT ---')
-              github_event()
-              print('--- EJECUCIÓN FINALIZADA EXITOSAMENTE ---')
-          except Exception as e:
-              print(f'*** ERROR EN EL BOT: {e} ***')
-              traceback.print_exc()
-              sys.exit(1)
-          "
+          python -m sqlmesh.integrations.github.cicd.command github
