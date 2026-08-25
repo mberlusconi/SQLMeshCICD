@@ -48,19 +48,19 @@ jobs:
           import os, subprocess, json
           from github import Github
 
-          print('=== INICIALIZANDO ESTADO Y GENERANDO SQLMESH DIFF ===')
+          print('=== INICIALIZANDO ESTADO MAIN Y GENERANDO SQLMESH DIFF ===')
           
-          # 1. Aseguramos que el entorno main esté inicializado/aplicado en el DuckDB local del CI
+          # 1. Aseguramos y aplicamos el estado inicial en el entorno main
           try:
-              print('Aplicando entorno main de referencia...')
+              print('Aplicando plan automático en entorno main...')
               subprocess.run(
-                  ['sqlmesh', 'plan', 'prod', '--auto-apply'],
+                  ['sqlmesh', 'plan', '--auto-apply', '--environment', 'main'],
                   capture_output=True,
                   text=True,
                   check=True
               )
           except subprocess.CalledProcessError as e:
-              print(f'Nota en plan prod (puede ser normal si ya existe): {e.stderr}')
+              print(f'Nota en plan main: {e.stderr}')
 
           # 2. Ejecutamos el diff contra main
           diff_output = ''
