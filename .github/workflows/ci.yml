@@ -40,6 +40,10 @@ jobs:
       # - name: Run SQLMesh CI/CD Bot
       #   run: |
       #     sqlmesh_cicd github --token ${{ secrets.GITHUB_TOKEN }} gen-prod-plan
+      - name: Initialize Production State in DuckDB
+        run: |
+          sqlmesh plan --auto-apply --environment main
+
       - name: Generate and Post SQLMesh Data Diff
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,21 +52,8 @@ jobs:
           import os, subprocess, json
           from github import Github
 
-          print('=== INICIALIZANDO ESTADO MAIN Y GENERANDO SQLMESH DIFF ===')
+          print('=== GENERANDO SQLMESH DIFF ===')
           
-          # 1. Aseguramos y aplicamos el estado inicial en el entorno main
-          try:
-              print('Aplicando plan automático en entorno main...')
-              subprocess.run(
-                  ['sqlmesh', 'plan', '--auto-apply', '--environment', 'main'],
-                  capture_output=True,
-                  text=True,
-                  check=True
-              )
-          except subprocess.CalledProcessError as e:
-              print(f'Nota en plan main: {e.stderr}')
-
-          # 2. Ejecutamos el diff contra main
           diff_output = ''
           try:
               result = subprocess.run(
@@ -91,22 +82,19 @@ jobs:
 
           print(f'Publicando comentario en el PR #{pr_number}...')
 
-          # Conectar a la API de GitHub usando PyGithub
           g = Github(os.getenv('GITHUB_TOKEN'))
           repo = g.get_repo(repo_name)
           pr = repo.get_pull(pr_number)
 
-          # Formatear el mensaje del comentario
           comment_body = f'''📊 SQLMesh Data Diff Report
           
           Resultado de la comparación contra la rama `main`:
           
           \`\`\`text
-          {diff_output if diff_output.strip() else 'No se detectaron diferencias.'}
+          {diff_output if diff_output.strip() else 'No se detectaron diferencias en los datos.'}
           \`\`\`
           '''
 
-          # Buscar si ya existe un comentario previo de este script para actualizarlo o crear uno nuevo
           existing_comments = pr.get_issue_comments()
           target_comment = None
           for comment in existing_comments:
