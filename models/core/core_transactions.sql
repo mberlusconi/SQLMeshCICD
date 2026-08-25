@@ -13,7 +13,6 @@ SELECT
   transaction_date,
   amount,
   currency,
-  -- Métricas derivadas de negocio
   CASE 
     WHEN amount >= 200 THEN 'HIGH'
     WHEN amount >= 100 THEN 'MEDIUM'
