@@ -50,17 +50,17 @@
     - [x] Checkout del código.
     - [x] Configuración de Python y dependencias (`sqlmesh`, `duckdb`, etc.).
     - [x] Ejecución de tests unitarios de SQLMesh (`sqlmesh test`).
-    - [ ] Creación de entorno virtual dinámico por Pull Request (`sqlmesh plan pr_<number>`).
+    - [x] Creación de entorno virtual dinámico por Pull Request (`sqlmesh plan pr_<number>`).
 - [ ] **3.3. Configurar Secretos / Artefactos**
   - [ ] Configurar persistencia del estado (o base de datos para la demo en CI).
 
 ---
 
 ## 🎬 Fase 4: Demostración Final End-to-End (Demo Live)
-- [ ] **4.1. Abrir un Pull Request (PR)**
-  - [ ] Crear una rama nueva (`git checkout -b feature/nuevos-marts`).
-  - [ ] Modificar o agregar una métrica en la capa Marts (`daily_sales.sql`).
-  - [ ] Hacer `push` y abrir el Pull Request en GitHub.
+- [x] **4.1. Abrir un Pull Request (PR)**
+  - [x] Crear una rama nueva (`git checkout -b feature/nuevos-marts`).
+  - [x] Modificar o agregar una métrica en la capa Marts (`daily_sales.sql`).
+  - [x] Hacer `push` y abrir el Pull Request en GitHub.
 - [ ] **4.2. Validación Automática en PR (CI)**
   - [ ] Mostrar cómo GitHub Actions ejecuta el pipeline de pruebas y auditoría en un entorno Virtual aislado correspondiente a la PR.
 - [ ] **4.3. Merge & Deploy Automático (CD)**
