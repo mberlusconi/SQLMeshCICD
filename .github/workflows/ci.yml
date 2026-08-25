@@ -39,4 +39,4 @@ jobs:
 
       - name: Run SQLMesh CI/CD Bot
         run: |
-          sqlmesh_cicd github --token ${{ secrets.GITHUB_TOKEN }} run-all
+          sqlmesh_cicd github --token ${{ secrets.GITHUB_TOKEN }} gen-prod-plan
