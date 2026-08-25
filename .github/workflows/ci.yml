@@ -1,4 +1,4 @@
-name: DataOps CI Pipeline
+name: DataOps - CI Pipeline
 
 on:
   pull_request:
@@ -6,10 +6,10 @@ on:
   workflow_dispatch:  
 
 jobs:
-  dataops-ci:
+  pr-validation:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -24,12 +24,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Ensure DB directory exists
-        run: mkdir -p db      
+        run: mkdir -p db
 
-      - name: Run SQLMesh Unit Tests
-        run: |
-          sqlmesh test 
+      - name: Run Unit Tests
+        run: sqlmesh test
 
-      - name: Validate SQLMesh Models Plan
-        run: |
-          sqlmesh plan --skip-tests --auto-apply
+      - name: Deploy to Isolated PR Environment
+        run: sqlmesh plan pr_${{ github.event.number }} --skip-tests --auto-apply

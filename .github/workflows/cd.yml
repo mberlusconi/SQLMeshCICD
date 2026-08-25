@@ -1,0 +1,57 @@
+name: DataOps - CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  # 1. Despliegue Automático a DEV
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdir -p db
+          sqlmesh plan dev --skip-tests --auto-apply
+
+  # 2. Promoción a UAT (Pausa por aprobación manual)
+  deploy-uat:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment: uat
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdir -p db
+          sqlmesh plan uat --skip-tests --auto-apply
+
+  # 3. Promoción a PROD (Pausa por aprobación manual)
+  deploy-prod:
+    needs: deploy-uat
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdir -p db
+          sqlmesh plan prod --skip-tests --auto-apply
