@@ -14,7 +14,7 @@ SELECT
   amount,
   currency,
   CASE 
-    WHEN amount >= 250 THEN 'HIGH'
+    WHEN amount >= 200 THEN 'HIGH'
     WHEN amount >= 100 THEN 'MEDIUM'
     ELSE 'LOW'
   END AS ticket_segment
