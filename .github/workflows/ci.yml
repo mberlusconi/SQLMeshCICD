@@ -40,4 +40,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m sqlmesh.integrations.github.cicd.command github
+          python -c "
+          import os, sys
+          from sqlmesh.integrations.github.cicd.controller import Bot
+
+          print('=== INICIANDO SQLMESH GITHUB BOT ===')
+          
+          # Instanciar e invocar el bot usando el token y la config local
+          try:
+              bot = Bot()
+              bot.run()
+              print('=== BOT EJECUTADO CON ÉXITO ===')
+          except Exception as e:
+              print(f'*** ERROR AL EJECUTAR EL BOT: {e} ***')
+              import traceback
+              traceback.print_exc()
+              sys.exit(1)
+          "
