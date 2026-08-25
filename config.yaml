@@ -8,3 +8,7 @@ default_gateway: local
 
 model_defaults:
   dialect: duckdb
+
+# Bloque requerido para que la CLI ejecute la integración de PRs
+cicd_bot:
+  type: github

@@ -148,3 +148,43 @@ sqlmesh plan
 ├── tests/                      # Suite de pruebas unitarias en YAML
 ├── .gitignore
 └── requirements.txt            # Dependencias de Python (sqlmesh, duckdb, etc.)
+```
+
+## 🤖 Bot de CI/CD Nativo de SQLMesh (Data Diff en PRs)
+
+El pipeline de CI integra el **bot nativo de SQLMesh** (`sqlmesh.integrations.github.cicd.command`). Su objetivo es actuar como un auditor automático que analiza las transformaciones SQL y publica un resumen semántico directo en cada Pull Request.
+
+### ⚙️ Arquitectura del Bot
+
+```text
+[ Developer aplica push a PR ]
+               │
+               ▼
+┌──────────────────────────────────────────┐
+│ 1. Git Diff Engine                       │ ──► Compara el código SQL de la rama contra 'main'.
+└──────────────────────────────────────────┘
+               │
+               ▼
+┌──────────────────────────────────────────┐
+│ 2. Semantic DAG Parsing (SQLMesh Core)   │ ──► Analiza el árbol de dependencias (DAG) 
+└──────────────────────────────────────────┘     para identificar modelos directamente
+                                                 modificados e impactados (downstream).
+               │
+               ▼
+┌──────────────────────────────────────────┐
+│ 3. Virtual Plan Generation               │ ──► Genera el plan en el entorno `pr_<numero>`
+└──────────────────────────────────────────┘     y clasifica los cambios 
+                                                (Breaking vs. Non-breaking).
+               │
+               ▼
+┌──────────────────────────────────────────┐
+│ 4. GitHub REST API Integration           │ ──► Publica o actualiza el comentario en el PR
+└──────────────────────────────────────────┘     (evitando spam de notificaciones).
+```
+
+### 📋 Información que Reporta al Approver / Data Manager
+
+* **Categorización del Cambio:** Identifica si los cambios son *Non-breaking* o *Breaking* (requiriendo backfills o atención especial).
+* **Análisis de Impacto en el DAG:** Lista tanto los modelos modificados directamente como las tablas *downstream* recalculadas automáticamente.
+* **Schema & Data Diff:** Muestra alteraciones estructurales (columnas añadidas, eliminadas o cambios de tipos) y diferencias de datos.
+* **Trazabilidad del Ambiente:** Registra el entorno efímero (`pr_<numero>`) donde se desplegaron los datos de validación.
