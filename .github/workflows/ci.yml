@@ -36,24 +36,40 @@ jobs:
       - name: Run SQLMesh Unit Tests
         run: sqlmesh test
 
-      - name: Run SQLMesh CI/CD Bot
+      - name: Run SQLMesh CI/CD Bot (Discovery Mode)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python -c "
-          import os, sys
-          from sqlmesh.integrations.github.cicd.controller import Bot
+          import sys, click, traceback
+          import sqlmesh.integrations.github.cicd.command as cmd
 
-          print('=== INICIANDO SQLMESH GITHUB BOT ===')
+          print('=== ANALIZANDO MÓDULO SQLMESH ===')
           
-          # Instanciar e invocar el bot usando el token y la config local
+          # Buscamos dinámicamente cualquier objeto que sea un comando de Click
+          cli_func = None
+          for name in dir(cmd):
+              obj = getattr(cmd, name)
+              if isinstance(obj, click.Command) or isinstance(obj, click.Group):
+                  cli_func = obj
+                  print(f'[OK] Encontrada función CLI: {name}')
+                  break
+          
+          if not cli_func:
+              print('[ERROR] No se encontró ninguna función CLI. Atributos:', [a for a in dir(cmd) if not a.startswith('_')])
+              sys.exit(1)
+
+          print('=== EJECUTANDO CLI ===')
+          # Le pasamos el argumento que Click espera encontrar nativamente
+          sys.argv = ['sqlmesh_cicd'] 
+          
           try:
-              bot = Bot()
-              bot.run()
-              print('=== BOT EJECUTADO CON ÉXITO ===')
+              cli_func()
+          except SystemExit as e:
+              print(f'=== CLI FINALIZÓ CON CÓDIGO {e.code} ===')
+              # Si Click imprime la ayuda por falta de argumentos, lo veremos acá
           except Exception as e:
-              print(f'*** ERROR AL EJECUTAR EL BOT: {e} ***')
-              import traceback
+              print(f'*** ERROR FATAL: {e} ***')
               traceback.print_exc()
               sys.exit(1)
           "
