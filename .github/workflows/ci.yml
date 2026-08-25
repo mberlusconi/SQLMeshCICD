@@ -48,10 +48,23 @@ jobs:
           import os, subprocess, json
           from github import Github
 
-          print('=== GENERANDO SQLMESH DIFF ===')
+          print('=== INICIALIZANDO ESTADO Y GENERANDO SQLMESH DIFF ===')
+          
+          # 1. Aseguramos que el entorno main esté inicializado/aplicado en el DuckDB local del CI
+          try:
+              print('Aplicando entorno main de referencia...')
+              subprocess.run(
+                  ['sqlmesh', 'plan', 'prod', '--auto-apply'],
+                  capture_output=True,
+                  text=True,
+                  check=True
+              )
+          except subprocess.CalledProcessError as e:
+              print(f'Nota en plan prod (puede ser normal si ya existe): {e.stderr}')
+
+          # 2. Ejecutamos el diff contra main
           diff_output = ''
           try:
-              # Ejecutamos el diff de sqlmesh comparando contra main
               result = subprocess.run(
                   ['sqlmesh', 'diff', 'main'],
                   capture_output=True,
@@ -59,9 +72,8 @@ jobs:
                   check=True
               )
               diff_output = result.stdout
-              print('Diff ejecutado.')
+              print('Diff ejecutado exitosamente.')
           except subprocess.CalledProcessError as e:
-              # Capturamos tanto stdout como stderr para el reporte
               diff_output = f'STDOUT:\n{e.stdout}\n\nSTDERR:\n{e.stderr}'
               print('Error al ejecutar el comando diff.')
 
@@ -84,10 +96,10 @@ jobs:
           repo = g.get_repo(repo_name)
           pr = repo.get_pull(pr_number)
 
-          # Formatear el mensaje del comentario con la estructura solicitada
+          # Formatear el mensaje del comentario
           comment_body = f'''📊 SQLMesh Data Diff Report
           
-          Resultado de la comparación contra la rama:
+          Resultado de la comparación contra la rama `main`:
           
           \`\`\`text
           {diff_output if diff_output.strip() else 'No se detectaron diferencias.'}
