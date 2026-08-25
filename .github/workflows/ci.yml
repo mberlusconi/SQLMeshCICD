@@ -40,15 +40,15 @@ jobs:
 
       - name: Build Baseline State from Main
         run: |
-          # 1. Capturamos el nombre de la rama actual del PR
-          PR_BRANCH=$(git branch --show-current)
+          # 1. Guardamos los cambios del PR en una rama temporal segura
+          git checkout -b estado_del_pr
           
           # 2. Nos movemos a main y registramos el estado base en DuckDB (entorno prod)
           git checkout main
           sqlmesh plan --auto-apply
           
-          # 3. Volvemos a la rama del PR con los cambios nuevos
-          git checkout $PR_BRANCH
+          # 3. Volvemos a los cambios del PR
+          git checkout estado_del_pr
 
       - name: Generate and Post SQLMesh Data Diff
         env:
@@ -57,6 +57,7 @@ jobs:
           cat << 'EOF' > post_diff.py
           import os, subprocess, json
           from github import Github
+          from github import Auth
 
           print('=== GENERANDO SQLMESH DIFF ===')
           
@@ -88,7 +89,9 @@ jobs:
 
           print(f'Publicando comentario en el PR #{pr_number}...')
 
-          g = Github(os.getenv('GITHUB_TOKEN'))
+          # Autenticación actualizada para evitar el DeprecationWarning
+          auth = Auth.Token(os.getenv('GITHUB_TOKEN'))
+          g = Github(auth=auth)
           repo = g.get_repo(repo_name)
           pr = repo.get_pull(pr_number)
 
