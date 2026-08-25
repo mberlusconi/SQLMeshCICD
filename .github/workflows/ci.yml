@@ -41,4 +41,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYTHONUNBUFFERED: "1"
         run: |
-          python -m sqlmesh.integrations.github.cicd.command --command github_event
+          python -m sqlmesh.integrations.github.cicd.command --command github_event --p ${{ github.event_path }}
