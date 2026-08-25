@@ -37,6 +37,73 @@ jobs:
       - name: Run SQLMesh Unit Tests
         run: sqlmesh test
 
-      - name: Run SQLMesh CI/CD Bot
+      # - name: Run SQLMesh CI/CD Bot
+      #   run: |
+      #     sqlmesh_cicd github --token ${{ secrets.GITHUB_TOKEN }} gen-prod-plan
+      - name: Generate and Post SQLMesh Data Diff
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          sqlmesh_cicd github --token ${{ secrets.GITHUB_TOKEN }} gen-prod-plan
+          python -c "
+          import os, subprocess, json
+          from github import Github
+
+          print('=== GENERANDO SQLMESH DIFF ===')
+          try:
+              # Ejecutamos el diff de sqlmesh comparando contra main
+              result = subprocess.run(
+                  ['sqlmesh', 'diff', 'main'],
+                  capture_output=True,
+                  text=True,
+                  check=True
+              )
+              diff_output = result.stdout
+              print('Diff generado exitosamente.')
+          except subprocess.CalledProcessError as e:
+              diff_output = f'Error al generar el diff:\n{e.stderr}'
+              print(diff_output)
+
+          # Parsear el evento de GitHub Actions para obtener el número del PR
+          event_path = os.getenv('GITHUB_EVENT_PATH')
+          with open(event_path, 'r') as f:
+              event_data = json.load(f)
+
+          if 'pull_request' not in event_data:
+              print('Este workflow no se disparó en un Pull Request.')
+              exit(0)
+
+          pr_number = event_data['pull_request']['number']
+          repo_name = event_data['repository']['full_name']
+
+          print(f'Publicando comentario en el PR #{pr_number} del repositorio {repo_name}...')
+
+          # Conectar a la API de GitHub usando PyGithub
+          g = Github(os.getenv('GITHUB_TOKEN'))
+          repo = g.get_repo(repo_name)
+          pr = repo.get_pull(pr_number)
+
+          # Formatear el mensaje del comentario
+          comment_body = f'''## 📊 SQLMesh Data Diff Report
+          
+          Resultado de la comparación contra la rama `main`:
+          
+          \`\`\`text
+          {diff_output if diff_output.strip() else 'No se detectaron diferencias en los datos o esquemas.'}
+          \`\`\`
+          '''
+
+          # Buscar si ya existe un comentario previo de este script para actualizarlo o crear uno nuevo
+          existing_comments = pr.get_issue_comments()
+          target_comment = None
+          for comment in existing_comments:
+              if '## 📊 SQLMesh Data Diff Report' in comment.body:
+                  target_comment = comment
+                  break
+
+          if target_comment:
+              target_comment.edit(comment_body)
+              print('Comentario existente actualizado.')
+          else:
+              pr.create_issue_comment(comment_body)
+              print('Nuevo comentario creado exitosamente.')
+          "
