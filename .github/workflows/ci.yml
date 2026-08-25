@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Ensure DB directory exists
-          run: mkdir -p db      
+        run: mkdir -p db      
 
       - name: Run SQLMesh Unit Tests
         run: |
