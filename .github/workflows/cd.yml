@@ -22,8 +22,13 @@ jobs:
       - run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install PyGithub
           mkdir -p db
           sqlmesh plan dev --skip-tests --auto-apply
+      - name: Update PR Status (DEV)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python update_status.py dev "✅ Deployed"
 
   deploy-uat:
     needs: deploy-dev
@@ -38,8 +43,13 @@ jobs:
       - run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install PyGithub
           mkdir -p db
           sqlmesh plan uat --skip-tests --auto-apply
+      - name: Update PR Status (UAT)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python update_status.py uat "🚀 Deployed & Testing"
 
   deploy-prod:
     needs: deploy-uat
@@ -54,52 +64,10 @@ jobs:
       - run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install PyGithub
           mkdir -p db
           sqlmesh plan prod --skip-tests --auto-apply
-
-  notify-pr:
-    needs: [deploy-dev, deploy-uat, deploy-prod]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Update PR Deployment Status
+      - name: Update PR Status (PROD)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python -c "
-          import os
-          from github import Github
-          from github import Auth
-
-          auth = Auth.Token(os.getenv('GITHUB_TOKEN'))
-          g = Github(auth=auth)
-          repo = g.get_repo(os.getenv('GITHUB_REPOSITORY'))
-          
-          commit_sha = os.getenv('GITHUB_SHA')
-          commit = repo.get_commit(commit_sha)
-          pulls = commit.get_pulls()
-
-          for pr in pulls:
-              print(f'Updating status for PR #{pr.number}')
-              comments = pr.get_issue_comments()
-              target_comment = None
-              
-              for comment in comments:
-                  if '## 📊 SQLMesh Impact Report' in comment.body:
-                      target_comment = comment
-                      break
-              
-              deployment_status = '''
-
-              ---
-              ### 🚀 Deployment Status
-              * **DEV:** ✅ Deployed successfully
-              * **UAT:** ✅ Approved & Deployed
-              * **PROD:** 🟢 Live in Production
-              '''
-              
-              if target_comment:
-                  if '### 🚀 Deployment Status' not in target_comment.body:
-                      target_comment.edit(target_comment.body + deployment_status)
-                  print('PR comment updated with deployment status.')
-          "
+        run: python update_status.py prod "🟢 Live in Production"
