@@ -28,7 +28,7 @@ jobs:
 
       - name: Run SQLMesh Unit Tests
         run: |
-          sqlmesh test
+          sqlmesh test --auto-apply
 
       - name: Validate SQLMesh Models Plan
         run: |
