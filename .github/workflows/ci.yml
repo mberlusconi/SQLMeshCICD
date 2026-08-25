@@ -49,6 +49,7 @@ jobs:
           from github import Github
 
           print('=== GENERANDO SQLMESH DIFF ===')
+          diff_output = ''
           try:
               # Ejecutamos el diff de sqlmesh comparando contra main
               result = subprocess.run(
@@ -58,10 +59,11 @@ jobs:
                   check=True
               )
               diff_output = result.stdout
-              print('Diff generado exitosamente.')
+              print('Diff ejecutado.')
           except subprocess.CalledProcessError as e:
-              diff_output = f'Error al generar el diff:\n{e.stderr}'
-              print(diff_output)
+              # Capturamos tanto stdout como stderr para el reporte
+              diff_output = f'STDOUT:\n{e.stdout}\n\nSTDERR:\n{e.stderr}'
+              print('Error al ejecutar el comando diff.')
 
           # Parsear el evento de GitHub Actions para obtener el número del PR
           event_path = os.getenv('GITHUB_EVENT_PATH')
@@ -75,20 +77,20 @@ jobs:
           pr_number = event_data['pull_request']['number']
           repo_name = event_data['repository']['full_name']
 
-          print(f'Publicando comentario en el PR #{pr_number} del repositorio {repo_name}...')
+          print(f'Publicando comentario en el PR #{pr_number}...')
 
           # Conectar a la API de GitHub usando PyGithub
           g = Github(os.getenv('GITHUB_TOKEN'))
           repo = g.get_repo(repo_name)
           pr = repo.get_pull(pr_number)
 
-          # Formatear el mensaje del comentario
-          comment_body = f'''## 📊 SQLMesh Data Diff Report
+          # Formatear el mensaje del comentario con la estructura solicitada
+          comment_body = f'''📊 SQLMesh Data Diff Report
           
-          Resultado de la comparación contra la rama `main`:
+          Resultado de la comparación contra la rama:
           
           \`\`\`text
-          {diff_output if diff_output.strip() else 'No se detectaron diferencias en los datos o esquemas.'}
+          {diff_output if diff_output.strip() else 'No se detectaron diferencias.'}
           \`\`\`
           '''
 
@@ -96,7 +98,7 @@ jobs:
           existing_comments = pr.get_issue_comments()
           target_comment = None
           for comment in existing_comments:
-              if '## 📊 SQLMesh Data Diff Report' in comment.body:
+              if '📊 SQLMesh Data Diff Report' in comment.body:
                   target_comment = comment
                   break
 
