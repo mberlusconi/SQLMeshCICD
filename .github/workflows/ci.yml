@@ -39,5 +39,6 @@ jobs:
       - name: Run SQLMesh CI/CD Bot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONUNBUFFERED: "1"
         run: |
           python -m sqlmesh.integrations.github.cicd.command --command github_event
