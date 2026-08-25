@@ -32,14 +32,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install PyGithub  # <-- LIBRERÍA NECESARIA PARA EL SCRIPT DE ABAJO
           mkdir -p db
 
       - name: Run SQLMesh Unit Tests
         run: sqlmesh test
 
-      # - name: Run SQLMesh CI/CD Bot
-      #   run: |
-      #     sqlmesh_cicd github --token ${{ secrets.GITHUB_TOKEN }} gen-prod-plan
+      # Dependiendo de cómo gestiones tu estado, este paso inicializa DuckDB local
       - name: Initialize Production State in DuckDB
         run: |
           sqlmesh plan --auto-apply
@@ -48,7 +47,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -c "
+          # Usamos un archivo temporal (Heredoc) para evitar errores de comillas en bash/python
+          cat << 'EOF' > post_diff.py
           import os, subprocess, json
           from github import Github
 
@@ -86,19 +86,19 @@ jobs:
           repo = g.get_repo(repo_name)
           pr = repo.get_pull(pr_number)
 
-          comment_body = f'''📊 SQLMesh Data Diff Report
+          comment_body = f"""📊 **SQLMesh Data Diff Report**
           
           Resultado de la comparación contra la rama `main`:
           
-          \`\`\`text
+          ```text
           {diff_output if diff_output.strip() else 'No se detectaron diferencias en los datos.'}
-          \`\`\`
-          '''
+          ```
+          """
 
           existing_comments = pr.get_issue_comments()
           target_comment = None
           for comment in existing_comments:
-              if '📊 SQLMesh Data Diff Report' in comment.body:
+              if '📊 **SQLMesh Data Diff Report**' in comment.body:
                   target_comment = comment
                   break
 
@@ -108,4 +108,7 @@ jobs:
           else:
               pr.create_issue_comment(comment_body)
               print('Nuevo comentario creado exitosamente.')
-          "
+          EOF
+          
+          # Ejecutamos el script que acabamos de crear
+          python post_diff.py
