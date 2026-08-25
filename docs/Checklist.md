@@ -42,14 +42,14 @@
 
 ## 🛠️ Fase 3: Configuración e Integración CI/CD (Pipeline de Código con GitHub Actions)
 - [ ] **3.1. Preparar Repositorio GitHub**
-  - [ ] Inicializar Git (`git init`, `git add .`, `git commit`).
-  - [ ] Crear repositorio remoto en GitHub y vincularlo (`git remote add origin ...`).
-- [ ] **3.2. Configurar Workflow de CI/CD**
-  - [ ] Crear el directorio de workflows: `.github/workflows/sqlmesh.yml`.
-  - [ ] Configurar los pasos de la GitHub Action:
-    - [ ] Checkout del código.
-    - [ ] Configuración de Python y dependencias (`sqlmesh`, `duckdb`, etc.).
-    - [ ] Ejecución de tests unitarios de SQLMesh (`sqlmesh test`).
+  - [x] Inicializar Git (`git init`, `git add .`, `git commit`).
+  - [x] Crear repositorio remoto en GitHub y vincularlo (`git remote add origin ...`).
+- [x] **3.2. Configurar Workflow de CI/CD**
+  - [x] Crear el directorio de workflows: `.github/workflows/sqlmesh.yml`.
+  - [x] Configurar los pasos de la GitHub Action:
+    - [x] Checkout del código.
+    - [x] Configuración de Python y dependencias (`sqlmesh`, `duckdb`, etc.).
+    - [x] Ejecución de tests unitarios de SQLMesh (`sqlmesh test`).
     - [ ] Creación de entorno virtual dinámico por Pull Request (`sqlmesh plan pr_<number>`).
 - [ ] **3.3. Configurar Secretos / Artefactos**
   - [ ] Configurar persistencia del estado (o base de datos para la demo en CI).
