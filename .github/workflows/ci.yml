@@ -43,7 +43,7 @@ jobs:
           # 1. Capturamos el nombre de la rama actual del PR
           PR_BRANCH=$(git branch --show-current)
           
-          # 2. Nos movemos a main y registramos el estado base en DuckDB
+          # 2. Nos movemos a main y registramos el estado base en DuckDB (entorno prod)
           git checkout main
           sqlmesh plan --auto-apply
           
@@ -62,9 +62,9 @@ jobs:
           
           diff_output = ''
           try:
-              # Ahora SQLMesh compara tu PR contra el estado que dejamos en el paso anterior
+              # SQLMesh evalúa los cambios de la rama actual contra el entorno base 'prod'
               result = subprocess.run(
-                  ['sqlmesh', 'diff', 'main'],
+                  ['sqlmesh', 'diff', 'prod'],
                   capture_output=True,
                   text=True,
                   check=True
@@ -94,7 +94,7 @@ jobs:
 
           comment_body = f"""## 📊 Reporte de Impacto SQLMesh
           
-          Evaluación de los cambios propuestos contra el entorno de producción (`main`):
+          Evaluación de los cambios propuestos contra el entorno de producción (`prod`):
           
           ```text
           {diff_output if diff_output.strip() else 'No se detectaron diferencias semánticas ni de estructura.'}
