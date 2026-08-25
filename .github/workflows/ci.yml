@@ -40,14 +40,9 @@ jobs:
 
       - name: Build Baseline State from Main
         run: |
-          # 1. Guardamos los cambios del PR en una rama temporal segura
           git checkout -b estado_del_pr
-          
-          # 2. Nos movemos a main y registramos el estado base en DuckDB (entorno prod)
           git checkout main
           sqlmesh plan --auto-apply
-          
-          # 3. Volvemos a los cambios del PR
           git checkout estado_del_pr
 
       - name: Generate and Post SQLMesh Data Diff
@@ -59,64 +54,59 @@ jobs:
           from github import Github
           from github import Auth
 
-          print('=== GENERANDO SQLMESH DIFF ===')
+          print("=== GENERATING SQLMESH DIFF ===")
           
-          diff_output = ''
-          try:
-              # SQLMesh evalúa los cambios de la rama actual contra el entorno base 'prod'
-              result = subprocess.run(
-                  ['sqlmesh', 'diff', 'prod'],
-                  capture_output=True,
-                  text=True,
-                  check=True
-              )
-              diff_output = result.stdout
-              print('Diff ejecutado exitosamente.')
-          except subprocess.CalledProcessError as e:
-              diff_output = f'STDOUT:\n{e.stdout}\n\nSTDERR:\n{e.stderr}'
-              print('Error al ejecutar el comando diff.')
+          result = subprocess.run(
+              ["sqlmesh", "diff", "prod"],
+              capture_output=True,
+              text=True
+          )
+          
+          diff_output = result.stdout.strip()
+          
+          if not diff_output and result.returncode != 0:
+              diff_output = f"Internal SQLMesh Error:\n{result.stderr}"
 
-          event_path = os.getenv('GITHUB_EVENT_PATH')
-          with open(event_path, 'r') as f:
+          event_path = os.getenv("GITHUB_EVENT_PATH")
+          with open(event_path, "r") as f:
               event_data = json.load(f)
 
-          if 'pull_request' not in event_data:
-              print('Este workflow no se disparó en un Pull Request.')
+          if "pull_request" not in event_data:
+              print("This workflow was not triggered by a Pull Request.")
               exit(0)
 
-          pr_number = event_data['pull_request']['number']
-          repo_name = event_data['repository']['full_name']
+          pr_number = event_data["pull_request"]["number"]
+          repo_name = event_data["repository"]["full_name"]
 
-          print(f'Publicando comentario en el PR #{pr_number}...')
+          print(f"Posting comment to PR #{pr_number}...")
 
-          # Autenticación actualizada para evitar el DeprecationWarning
-          auth = Auth.Token(os.getenv('GITHUB_TOKEN'))
+          auth = Auth.Token(os.getenv("GITHUB_TOKEN"))
           g = Github(auth=auth)
           repo = g.get_repo(repo_name)
           pr = repo.get_pull(pr_number)
 
-          comment_body = f"""## 📊 Reporte de Impacto SQLMesh
+          comment_body = f"""## 📊 SQLMesh Impact Report
           
-          Evaluación de los cambios propuestos contra el entorno de producción (`prod`):
+          Evaluation of proposed changes against the production environment (`prod`):
           
-          ```text
-          {diff_output if diff_output.strip() else 'No se detectaron diferencias semánticas ni de estructura.'}
+          ```diff
+          {diff_output if diff_output else "No semantic or structural differences detected."}
           ```
           """
 
           existing_comments = pr.get_issue_comments()
           target_comment = None
           for comment in existing_comments:
-              if '## 📊 Reporte de Impacto SQLMesh' in comment.body:
+              if "## 📊 SQLMesh Impact Report" in comment.body:
                   target_comment = comment
                   break
 
           if target_comment:
               target_comment.edit(comment_body)
-              print('Comentario existente actualizado.')
+              print("Existing comment updated successfully.")
           else:
               pr.create_issue_comment(comment_body)
-              print('Nuevo comentario creado exitosamente.')
+              print("New comment created successfully.")
           EOF
           
           python post_diff.py
