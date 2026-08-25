@@ -42,7 +42,7 @@ jobs:
       #     sqlmesh_cicd github --token ${{ secrets.GITHUB_TOKEN }} gen-prod-plan
       - name: Initialize Production State in DuckDB
         run: |
-          sqlmesh plan --auto-apply --environment main
+          sqlmesh plan --auto-apply
 
       - name: Generate and Post SQLMesh Data Diff
         env:
