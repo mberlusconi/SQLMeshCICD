@@ -35,4 +35,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m sqlmesh.integrations.github.cicd.command
+          python -m sqlmesh.integrations.github.cicd.command --command github_event
