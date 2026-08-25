@@ -37,7 +37,5 @@ jobs:
         run: sqlmesh test
 
       - name: Run SQLMesh CI/CD Bot
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          sqlmesh_cicd github
+          sqlmesh_cicd github --token ${{ secrets.GITHUB_TOKEN }} run-all
