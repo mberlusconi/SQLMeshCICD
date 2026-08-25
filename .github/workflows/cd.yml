@@ -28,7 +28,7 @@ jobs:
       - name: Update PR Status (DEV)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python update_status.py dev "✅ Deployed"
+        run: python .github/workflows/update_status.py dev "✅ Deployed"
 
   deploy-uat:
     needs: deploy-dev
@@ -49,7 +49,7 @@ jobs:
       - name: Update PR Status (UAT)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python update_status.py uat "🚀 Deployed & Testing"
+        run: python .github/workflows/update_status.py uat "🚀 Deployed & Testing"
 
   deploy-prod:
     needs: deploy-uat
@@ -70,4 +70,4 @@ jobs:
       - name: Update PR Status (PROD)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python update_status.py prod "🟢 Live in Production"
+        run: python .github/workflows/update_status.py prod "🟢 Live in Production"
