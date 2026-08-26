@@ -41,7 +41,7 @@
 ---
 
 ## 🛠️ Fase 3: Configuración e Integración CI/CD (Pipeline de Código con GitHub Actions)
-- [ ] **3.1. Preparar Repositorio GitHub**
+- [x] **3.1. Preparar Repositorio GitHub**
   - [x] Inicializar Git (`git init`, `git add .`, `git commit`).
   - [x] Crear repositorio remoto en GitHub y vincularlo (`git remote add origin ...`).
 - [x] **3.2. Configurar Workflow de CI/CD**
@@ -61,11 +61,11 @@
   - [x] Crear una rama nueva (`git checkout -b feature/nuevos-marts`).
   - [x] Modificar o agregar una métrica en la capa Marts (`daily_sales.sql`).
   - [x] Hacer `push` y abrir el Pull Request en GitHub.
-- [ ] **4.2. Validación Automática en PR (CI)**
-  - [ ] Mostrar cómo GitHub Actions ejecuta el pipeline de pruebas y auditoría en un entorno Virtual aislado correspondiente a la PR.
-- [ ] **4.3. Merge & Deploy Automático (CD)**
-  - [ ] Hacer Merge del PR a la rama `main`.
-  - [ ] Mostrar cómo el pipeline de producción aplica el Virtual Update instantáneo en `prod`.
+- [x] **4.2. Validación Automática en PR (CI)**
+  - [x] Mostrar cómo GitHub Actions ejecuta el pipeline de pruebas y auditoría en un entorno Virtual aislado correspondiente a la PR.
+- [x] **4.3. Merge & Deploy Automático (CD)**
+  - [x] Hacer Merge del PR a la rama `main`.
+  - [x] Mostrar cómo el pipeline de producción aplica el Virtual Update instantáneo en `prod`.
 
 ---
 
