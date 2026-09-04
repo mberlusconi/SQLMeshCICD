@@ -2,3 +2,5 @@ sqlmesh>=0.110.0
 duckdb>=0.9.0
 numpy>=1.24.0,<3.0.0
 PyGithub
+sqlmesh[snowflake]
+snowflake-connector-python

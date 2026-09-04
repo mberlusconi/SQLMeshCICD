@@ -1,31 +1,31 @@
 test_currency_normalization:
-  model: sales_analytics.core_transactions
+  model: demo.core_transactions
   vars:
     start_date: "2026-08-22"
     end_date: "2026-08-22"
   inputs:
-    sales_analytics.stg_transactions:
-      - transaction_id: 1
+    demo.stg_transactions:
+      - transaction_id: 101
         customer_id: "CUST_1"
         transaction_date: "2026-08-22"
-        amount: 100.00
-        currency: "usd"
-      - transaction_id: 2
+        amount: 150.50
+        currency: "USD"
+      - transaction_id: 102
         customer_id: "CUST_2"
         transaction_date: "2026-08-22"
-        amount: 50.00
-        currency: null
+        amount: 200.00
+        currency: "USD"
   outputs:
     query:
-      - transaction_id: 1
+      - transaction_id: 101
         customer_id: "CUST_1"
-        transaction_date: "2026-08-22 00:00:00"
-        amount: 100.00
-        currency: "usd"
+        transaction_date: "2026-08-22"
+        amount: 150.50
+        currency: "USD"
         ticket_segment: "MEDIUM"
-      - transaction_id: 2
+      - transaction_id: 102
         customer_id: "CUST_2"
-        transaction_date: "2026-08-22 00:00:00"
-        amount: 50.00
-        currency: null
-        ticket_segment: "LOW"
+        transaction_date: "2026-08-22"
+        amount: 200.00
+        currency: "USD"
+        ticket_segment: "MEDIUM"

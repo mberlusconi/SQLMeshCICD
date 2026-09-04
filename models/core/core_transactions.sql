@@ -1,5 +1,5 @@
 MODEL (
-  name sales_analytics.core_transactions,
+  name demo.core_transactions,
   kind INCREMENTAL_BY_TIME_RANGE (
     time_column transaction_date
   ),
@@ -18,6 +18,6 @@ SELECT
     WHEN amount >= 100 THEN 'MEDIUM'
     ELSE 'LOW'
   END AS ticket_segment
-FROM sales_analytics.stg_transactions
+FROM demo.stg_transactions
 WHERE
   transaction_date BETWEEN @start_date AND @end_date;

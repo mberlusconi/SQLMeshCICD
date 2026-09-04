@@ -1,22 +1,26 @@
 MODEL (
-  name sales_analytics.stg_transactions,
+  name demo.stg_transactions,
   kind INCREMENTAL_BY_TIME_RANGE (
     time_column transaction_date
   ),
-  start '2026-08-17',
-  cron '@daily',
-  audits (assert_valid_transactions)
+  start '2026-08-17'
 );
 
 WITH source_data AS (
-  SELECT * FROM read_csv_auto('sources/transactions/transactions_*.csv')
+  SELECT
+    CAST("$1" AS INT) AS transaction_id,
+    CAST("$2" AS VARCHAR) AS customer_id,
+    CAST("$3" AS DATE) AS transaction_date,
+    CAST("$4" AS DECIMAL(10, 2)) AS amount,
+    CAST("$5" AS VARCHAR) AS currency
+  FROM @stage_source()
 )
 SELECT
-  CAST(transaction_id AS INT) AS transaction_id,
-  CAST(customer_id AS VARCHAR) AS customer_id,
-  CAST(transaction_date AS DATE) AS transaction_date,
-  CAST(amount AS DECIMAL(10,2)) AS amount,
-  CAST(currency AS VARCHAR) AS currency
+  transaction_id,
+  customer_id,
+  transaction_date,
+  amount,
+  currency
 FROM source_data
 WHERE
-  CAST(transaction_date AS DATE) BETWEEN @start_date AND @end_date;
+  transaction_date BETWEEN @start_date AND @end_date

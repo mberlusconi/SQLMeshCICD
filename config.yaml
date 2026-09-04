@@ -4,11 +4,23 @@ gateways:
       type: duckdb
       database: db/analytics.duckdb
 
-default_gateway: local
+  snowflake:
+    connection:
+      type: snowflake
+      account: mu75918.us-east-2.aws
+      user: martin.berlusconi@allata.com
+      authenticator: externalbrowser
+      role: DBT_PIPELINE_DEVELOPER
+      warehouse: CICD
+      database: POC_CICD
+      concurrent_tasks: 1
+      
+    state_schema: SQLMESH_STATE
+
+default_gateway: snowflake
 
 model_defaults:
-  dialect: duckdb
+  dialect: snowflake
 
-# Bloque requerido para que la CLI ejecute la integración de PRs
 cicd_bot:
   type: github

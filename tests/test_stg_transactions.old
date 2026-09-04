@@ -1,0 +1,24 @@
+test_stg_transactions_logic:
+  model: demo.stg_transactions
+  inputs:
+    # Mock the table name that your @stage_source() macro compiles to
+    RAW_STAGE_DATA:
+      # Quote the $ column names so YAML parses them correctly
+      - "$1": 1001
+        "$2": 'CUST-A'
+        "$3": '2026-01-15'
+        "$4": 250.50
+        "$5": 'USD'
+      - "$1": 1002
+        "$2": 'CUST-B'
+        "$3": '2025-12-30' # Out of bounds (if testing time range)
+        "$4": 15.00
+        "$5": 'EUR'
+  outputs:
+    # Define what you expect the model to return based on the mock data
+    query:
+      - transaction_id: 1001
+        customer_id: 'CUST-A'
+        transaction_date: '2026-01-15'
+        amount: 250.50
+        currency: 'USD'

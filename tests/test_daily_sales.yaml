@@ -1,23 +1,24 @@
 test_daily_sales_aggregation:
-  model: sales_analytics.daily_sales
+  model: demo.daily_sales
+  vars:
+    start_date: "2026-08-22"
+    end_date: "2026-08-22"
   inputs:
-    sales_analytics.core_transactions:
-      - transaction_id: 1
-        customer_id: "C1"
-        transaction_date: "2026-08-22 00:00:00"
+    demo.core_transactions:
+      - transaction_id: 101
+        customer_id: "CUST_1"
+        transaction_date: "2026-08-22"
         amount: 100.00
-      - transaction_id: 2
-        customer_id: "C1"
-        transaction_date: "2026-08-22 00:00:00"
+        currency: "USD"
+      - transaction_id: 102
+        customer_id: "CUST_2"
+        transaction_date: "2026-08-22"
         amount: 50.00
-      - transaction_id: 3
-        customer_id: "C2"
-        transaction_date: "2026-08-22 00:00:00"
-        amount: 150.00
+        currency: "USD"
   outputs:
     query:
       - transaction_date: "2026-08-22"
-        total_transactions: 3
+        total_transactions: 2
         unique_customers: 2
-        total_revenue: 300.00
-        avg_ticket_size: 100.00
+        total_revenue: 150.00
+        avg_ticket_size: 75.00

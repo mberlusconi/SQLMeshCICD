@@ -1,5 +1,5 @@
 MODEL (
-  name sales_analytics.daily_sales,
+  name demo.daily_sales,
   kind FULL,
   cron '@daily'
 );
@@ -10,6 +10,6 @@ SELECT
   COUNT(DISTINCT customer_id) AS unique_customers,
   SUM(amount) AS total_revenue,
   AVG(amount) AS avg_ticket_size
-FROM sales_analytics.core_transactions
+FROM demo.core_transactions
 GROUP BY
   transaction_date;
